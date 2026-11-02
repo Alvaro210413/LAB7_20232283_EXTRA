@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Producto')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('catalogo')}"></nav>
+
+<main class="container page">
+    <!-- Una sola vista para crear y editar, enlazada con th:object / th:field -->
+    <h2 th:text="${product.id == null} ? 'Nuevo producto' : 'Editar producto'"></h2>
+
+    <form th:action="@{/products/save}" th:object="${product}" method="post" class="card card-body mt-3" style="max-width: 600px">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="mb-3">
+            <label class="form-label" for="name">Nombre</label>
+            <input type="text" class="form-control" th:field="*{name}" th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="price">Precio (S/)</label>
+            <!-- type="text" a propósito: la conversión se valida en el servidor -->
+            <input type="text" class="form-control" th:field="*{price}" th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="stock">Stock disponible</label>
+            <input type="text" class="form-control" th:field="*{stock}" th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a class="btn btn-secondary" th:href="@{/products}">Cancelar</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>
