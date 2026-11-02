@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Clientes')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('clientes')}"></nav>
+
+<main class="container page">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Clientes</h2>
+        <a class="btn btn-primary" th:href="@{/customers/new}">Nuevo cliente</a>
+    </div>
+
+    <div th:replace="~{fragments/layout :: mensajes}"></div>
+
+    <table class="table table-striped bg-white">
+        <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Tipo de documento</th>
+            <th>Número de documento</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${customers.isEmpty()}">
+            <td colspan="5" class="text-center text-muted">No hay clientes registrados</td>
+        </tr>
+        <tr th:each="c : ${customers}">
+            <td th:text="${c.id}"></td>
+            <td th:text="${c.name}"></td>
+            <td th:text="${c.documentType}"></td>
+            <td th:text="${c.document}"></td>
+            <td class="text-end">
+                <a class="btn btn-sm btn-outline-primary" th:href="@{/customers/edit(id=${c.id})}">Editar</a>
+                <form th:action="@{/customers/delete}" method="post" class="d-inline">
+                    <input type="hidden" name="id" th:value="${c.id}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

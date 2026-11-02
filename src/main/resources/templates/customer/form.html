@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Cliente')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('clientes')}"></nav>
+
+<main class="container page">
+    <!-- Una sola vista para crear y editar: el título depende de si hay id -->
+    <h2 th:text="${customer.id == null} ? 'Nuevo cliente' : 'Editar cliente'"></h2>
+
+    <form th:action="@{/customers/save}" th:object="${customer}" method="post" class="card card-body mt-3" style="max-width: 600px">
+        <input type="hidden" th:field="*{id}">
+
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+            <p class="mb-0" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="name">Nombre</label>
+            <input type="text" class="form-control" th:field="*{name}" th:errorclass="is-invalid">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="documentType">Tipo de documento</label>
+            <select class="form-select" th:field="*{documentType}" th:errorclass="is-invalid">
+                <option value="">-- Seleccione --</option>
+                <option th:each="t : ${tiposDocumento}" th:value="${t}" th:text="${t}"></option>
+            </select>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('documentType')}" th:errors="*{documentType}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="document">Número de documento</label>
+            <input type="text" class="form-control" maxlength="11" th:field="*{document}" th:errorclass="is-invalid">
+            <div class="form-text">DNI: 8 dígitos · RUC: 11 dígitos</div>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('document')}" th:errors="*{document}"></div>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a class="btn btn-secondary" th:href="@{/customers}">Cancelar</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

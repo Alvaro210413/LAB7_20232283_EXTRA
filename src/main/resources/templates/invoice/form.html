@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Registrar pedido')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('pedidos')}"></nav>
+
+<main class="container page">
+    <h2 class="mb-3">Registrar pedido</h2>
+
+    <form th:action="@{/invoices/save}" th:object="${invoice}" method="post" novalidate>
+
+        <!-- Errores globales: reglas que dependen de varios campos -->
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+            <p class="mb-0" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+        </div>
+
+        <div class="card card-body mb-3">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label" for="type">Tipo de comprobante</label>
+                    <select class="form-select" th:field="*{type}" th:errorclass="is-invalid">
+                        <option value="">-- Seleccione --</option>
+                        <option th:each="t : ${tipos}" th:value="${t}" th:text="${t}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label" for="date">Fecha</label>
+                    <input type="date" class="form-control" th:field="*{date}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="customerId">Cliente</label>
+                    <select class="form-select" th:field="*{customer.id}" th:errorclass="is-invalid">
+                        <option value="">-- Seleccione un cliente --</option>
+                        <option th:each="c : ${customers}" th:value="${c.id}"
+                                th:text="${c.name + ' (' + c.documentType + ' ' + c.document + ')'}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('customer.id')}" th:errors="*{customer.id}"></div>
+                    <div class="form-text">Factura: solo clientes con RUC · Boleta: solo clientes con DNI</div>
+                </div>
+            </div>
+        </div>
+
+        <table class="table bg-white align-middle">
+            <thead class="table-dark">
+            <tr>
+                <th style="width: 45%">Producto</th>
+                <th style="width: 18%">Cantidad</th>
+                <th class="text-end">Precio (S/)</th>
+                <th class="text-end">Subtotal (S/)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="line, st : *{details}">
+                <td>
+                    <select class="form-select" th:field="*{details[__${st.index}__].product.id}" th:errorclass="is-invalid">
+                        <option value="">-- Seleccione un producto --</option>
+                        <option th:each="p : ${products}" th:value="${p.id}"
+                                th:text="${p.name + ' (stock: ' + p.stock + ')'}"></option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('details[__${st.index}__].product.id')}"
+                         th:errors="*{details[__${st.index}__].product.id}"></div>
+                </td>
+                <td>
+                    <input type="text" class="form-control" th:field="*{details[__${st.index}__].quantity}" th:errorclass="is-invalid">
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('details[__${st.index}__].quantity')}"
+                         th:errors="*{details[__${st.index}__].quantity}"></div>
+                </td>
+                <td class="text-end"
+                    th:text="${line.price != null} ? ${#numbers.formatDecimal(line.price, 1, 'COMMA', 2, 'POINT')} : '-'"></td>
+                <td class="text-end"
+                    th:text="${line.subtotal != null} ? ${#numbers.formatDecimal(line.subtotal, 1, 'COMMA', 2, 'POINT')} : '-'"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <th colspan="3" class="text-end">Total</th>
+                <th class="text-end" th:text="${'S/ ' + #numbers.formatDecimal(invoice.total, 1, 'COMMA', 2, 'POINT')}"></th>
+            </tr>
+            </tfoot>
+        </table>
+        <p class="text-muted small">Las filas sin producto ni cantidad se ignoran. Subtotales y total se calculan en el servidor (Java).</p>
+
+        <div class="d-flex gap-2">
+            <button type="submit" name="addLine" value="1" class="btn btn-outline-secondary">+ Agregar producto</button>
+            <button type="submit" name="calculate" value="1" class="btn btn-outline-primary">Calcular total</button>
+            <button type="submit" class="btn btn-primary">Registrar pedido</button>
+            <a class="btn btn-secondary" th:href="@{/invoices}">Cancelar</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

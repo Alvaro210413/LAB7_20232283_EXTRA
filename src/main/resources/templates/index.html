@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Inicio')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('inicio')}"></nav>
+
+<main class="container page">
+    <h1 class="mb-3">Portal de gestión comercial</h1>
+    <p class="lead">
+        Aplicación interna de la distribuidora para mantener el catálogo de productos,
+        registrar a los clientes y emitir pedidos de venta (facturas y boletas)
+        controlando el stock disponible.
+    </p>
+
+    <div class="row g-3 mt-2">
+        <div class="col-md-4">
+            <a th:href="@{/customers}" class="text-decoration-none text-dark">
+                <div class="card card-link-box h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Clientes</h5>
+                        <p class="card-text">Registro de clientes con DNI o RUC.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a th:href="@{/products}" class="text-decoration-none text-dark">
+                <div class="card card-link-box h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Catálogo</h5>
+                        <p class="card-text">Productos con su precio y stock disponible.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a th:href="@{/invoices}" class="text-decoration-none text-dark">
+                <div class="card card-link-box h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Pedidos</h5>
+                        <p class="card-text">Emisión de facturas y boletas con cálculo de totales.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</main>
+</body>
+</html>

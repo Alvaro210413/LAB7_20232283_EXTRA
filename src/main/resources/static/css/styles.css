@@ -1,0 +1,5 @@
+body { background: #f5f7fa; }
+.page { max-width: 1100px; }
+.card-link-box { transition: box-shadow .15s; }
+.card-link-box:hover { box-shadow: 0 .5rem 1rem rgba(0,0,0,.12); }
+.table td, .table th { vertical-align: middle; }
