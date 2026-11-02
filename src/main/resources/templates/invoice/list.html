@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Pedidos')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: menu('pedidos')}"></nav>
+
+<main class="container page">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Pedidos</h2>
+        <a class="btn btn-primary" th:href="@{/invoices/new}">Registrar pedido</a>
+    </div>
+
+    <div th:replace="~{fragments/layout :: mensajes}"></div>
+
+    <table class="table table-striped bg-white">
+        <thead class="table-dark">
+        <tr>
+            <th>N°</th>
+            <th>Tipo</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Documento</th>
+            <th class="text-end">Productos</th>
+            <th class="text-end">Total (S/)</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${invoices.isEmpty()}">
+            <td colspan="8" class="text-center text-muted">No hay pedidos registrados</td>
+        </tr>
+        <tr th:each="i : ${invoices}">
+            <td th:text="${i.id}"></td>
+            <td>
+                <span class="badge" th:classappend="${i.type == 'Factura'} ? 'bg-primary' : 'bg-success'"
+                      th:text="${i.type}"></span>
+            </td>
+            <td th:text="${#temporals.format(i.date, 'dd/MM/yyyy')}"></td>
+            <td th:text="${i.customer.name}"></td>
+            <td th:text="${i.customer.documentType + ' ' + i.customer.document}"></td>
+            <td class="text-end" th:text="${i.details.size()}"></td>
+            <td class="text-end fw-bold" th:text="${#numbers.formatDecimal(i.total, 1, 'COMMA', 2, 'POINT')}"></td>
+            <td class="text-end">
+                <a class="btn btn-sm btn-outline-secondary" th:href="@{/invoices/detail(id=${i.id})}">Ver detalle</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>
